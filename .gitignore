@@ -6,6 +6,9 @@ sources/
 old/
 *.db
 
+# curche
+curche/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
