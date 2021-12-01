@@ -36,9 +36,10 @@ class CalculateChapterName:
         detectedChapter: Optional[str] = None
 
         chapterFunctions = [
-            self.__exNotation,
-            self.__defaultChapterNotation,
-            self.__anyOtherNumberNotation
+            self.__volNotation
+            #self.__exNotation,
+            #self.__defaultChapterNotation,
+            #self.__anyOtherNumberNotation
         ]
 
         for func in chapterFunctions:
@@ -47,6 +48,13 @@ class CalculateChapterName:
                 break
 
         return detectedChapter
+
+    def __volNotation(self, chapterName: str, anilistId: int) -> Optional[str]:
+        volRegex = r"v([0-9]+\.?[0-9]*)"
+        matchObj = re.search(volRegex, chapterName)
+        if matchObj:
+            return matchObj.group(1).lstrip("0") or ("0")
+        return None
 
     def __exNotation(self, chapterName: str, anilistId: int) -> Optional[str]:
         exRegex = r"^(\w+_|\#)?ex\ -\ .*?([0-9]+)?"
