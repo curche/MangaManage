@@ -90,18 +90,18 @@ class MainRunner:
                     self.compressChapter(chapterData)
                     self.insertInDatabase(chapterData)
                     new_chapters.add(chapterData)
-                    self.filesystem.deleteFolder(location=chapterPathStr)
+                    # self.filesystem.deleteFolder(location=chapterPathStr)
                 else:
                     self.logger.info("Source exists but chapter's already in db")
-                    self.filesystem.deleteFolder(location=chapterPathStr)
-            deleted_chapters = self.deleteReadChapters.execute()
-            for deleted_chapter in deleted_chapters:
-                if deleted_chapter in new_chapters:
-                    new_chapters.remove(deleted_chapter)
+                    # self.filesystem.deleteFolder(location=chapterPathStr)
+            # deleted_chapters = self.deleteReadChapters.execute()
+            # for deleted_chapter in deleted_chapters:
+            #     if deleted_chapter in new_chapters:
+            #         new_chapters.remove(deleted_chapter)
 
-            if len(new_chapters) > 0:
-                gaps = self.missingChapters.getGapsFromChaptersSince(dateScriptStart)
-                self.send_push(new_chapters, gaps)
+            # if len(new_chapters) > 0:
+            #     gaps = self.missingChapters.getGapsFromChaptersSince(dateScriptStart)
+            #     self.send_push(new_chapters, gaps)
         except Exception as thrown_exception:
             self.logger.error("Exception thrown")
             self.logger.error(str(thrown_exception))
