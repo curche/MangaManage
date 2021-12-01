@@ -59,7 +59,7 @@ class MainRunner:
                 anilistId = self.database.getAnilistIDForSeries(seriesName)
                 chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
                 estimatedArchivePath = self.generateArchivePath(
-                    anilistId, chapterNumber)
+                    anilistId, chapterName)
                 chapterData = Chapter(
                     anilistId,
                     seriesName,
@@ -78,7 +78,7 @@ class MainRunner:
                         seriesName, interactive=interactive
                     )
                     estimatedArchivePath = self.generateArchivePath(
-                        foundAnilistId, chapterNumber
+                        foundAnilistId, chapterName
                     )
                     chapterData.archivePath = estimatedArchivePath
                     if not foundAnilistId or foundAnilistId is None:
@@ -107,8 +107,8 @@ class MainRunner:
             self.logger.error(str(thrown_exception))
             self.send_error(thrown_exception)
 
-    def generateArchivePath(self, anilistId, chapterNumber):
-        return Path(self.archiveFolder).joinpath(f"{anilistId}/{chapterNumber}.cbz")
+    def generateArchivePath(self, anilistId, chapterName):
+        return Path(self.archiveFolder).joinpath(f"{anilistId}/{chapterName}.cbz")
 
     def findAnilistIdForSeries(self, series: str, interactive=False) -> Optional[str]:
         return self.updateTrackerIds.updateFor(series, interactive=interactive)
