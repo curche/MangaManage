@@ -32,7 +32,7 @@ class CreateMetadata3(CreateMetadataInterface):
         etree.SubElement(root, "AlternateSeries").text = anilistData.altTitles
         etree.SubElement(root, "Summary").text = anilistData.summary
         etree.SubElement(root, "Notes").text = anilistData.status
-        etree.SubElement(root, "Year").text = chapter.year
+        etree.SubElement(root, "Year").text = str(chapter.year)
         etree.SubElement(root, "Writer").text = anilistData.writer
         etree.SubElement(root, "Penciller").text = anilistData.penciller
         etree.SubElement(root, "Inker").text = anilistData.inker

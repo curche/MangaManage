@@ -110,7 +110,7 @@ class CalculateChapterName:
             else:
                 chapter_name = match_another_obj.group(1)
                 chapter_number = match_another_obj.group(2)
-                self.logger.debug(f"Regex results: [ {chapter_name}, {chapter_number}, 2021, \"\"]")
+                self.logger.debug(f"Regex results for {file_name}: [ {chapter_name}, {chapter_number}, 2021, \"\"]")
                 return [chapter_name, chapter_number, 2021, ""]
 
         chapter_name = match_obj.group(1)
@@ -119,7 +119,7 @@ class CalculateChapterName:
         year = match_obj.group(4)
         scan_info = match_obj.group(5)
 
-        self.logger.debug(f"Regex results: [ {chapter_name}, {chapter_number}, {year}, {scan_info} ]")
+        self.logger.debug(f"Regex results for {file_name}: [ {chapter_name}, {chapter_number}, {year}, {scan_info} ]")
         return [chapter_name, chapter_number, year, scan_info]
 
 
