@@ -96,7 +96,7 @@ class MainRunner:
                     self.compressChapter(chapterData)
                     # self.insertInDatabase(chapterData)
                     new_chapters.add(chapterData)
-                    # self.filesystem.deleteFolder(location=chapterPathStr)
+                    self.filesystem.deleteFolder(location=chapterPathStr)
                 else:
                     self.logger.info("Source exists but chapter's already in db")
                     # self.filesystem.deleteFolder(location=chapterPathStr)
