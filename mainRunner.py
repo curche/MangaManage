@@ -111,7 +111,7 @@ class MainRunner:
         except Exception as thrown_exception:
             self.logger.error("Exception thrown")
             self.logger.error(str(thrown_exception))
-            self.send_error(thrown_exception)
+            # self.send_error(thrown_exception)
 
     def generate_simple_archive_path(self, chapterPathStr):
         chapterPath = chapterPathStr.replace(self.sourceFolder, self.archiveFolder)
