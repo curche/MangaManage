@@ -61,7 +61,7 @@ class MainRunner:
                 seriesName = html.unescape(chapterPath.parent.name)
 
                 anilistId = 0  # self.database.getAnilistIDForSeries(seriesName)
-                chapterNumber = self.calcChapterName.execute(chapterName)
+                chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
                 [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
 
                 estimatedArchivePath = self.generateArchivePath(
