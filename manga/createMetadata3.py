@@ -31,10 +31,12 @@ class CreateMetadata3(CreateMetadataInterface):
         etree.SubElement(root, "Volume").text = chapter.chapterNumber
         etree.SubElement(root, "AlternateSeries").text = anilistData.altTitles
         etree.SubElement(root, "Summary").text = anilistData.summary
+        etree.SubElement(root, "Notes").text = anilistData.status
         etree.SubElement(root, "Year").text = chapter.year
         etree.SubElement(root, "Writer").text = anilistData.writer
         etree.SubElement(root, "Penciller").text = anilistData.penciller
         etree.SubElement(root, "Inker").text = anilistData.inker
+        etree.SubElement(root, "Genre").text = anilistData.genres
         etree.SubElement(root, "Web").text = anilistData.site_url
         etree.SubElement(root, "Format").text = anilistData.format
         if anilistData.country_of_origin == "JP":
