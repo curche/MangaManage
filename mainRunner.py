@@ -52,7 +52,7 @@ class MainRunner:
             new_chapters: Set[Chapter] = set()
             dateScriptStart = datetime.datetime.now()
             # Globs chapters
-            for chapterPathStr in glob.iglob(f"{self.sourceFolder}/*/*/*"):
+            for chapterPathStr in glob.iglob(f"{self.sourceFolder}/*/*/*/*"):
                 self.logger.info(f"Parsing: {chapterPathStr}")
                 # Inferring information from files
                 chapterPath = Path(chapterPathStr)
