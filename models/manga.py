@@ -31,7 +31,9 @@ class Chapter(SimpleChapter):
         chapterNumber: str,
         chapterName: str,
         sourcePath: Path,
-        archivePath: Path
+        archivePath: Path,
+        scan_info="",
+        year="2021"
     ):
         self.anilistId = anilistId
         self.seriesName = seriesName
@@ -39,7 +41,8 @@ class Chapter(SimpleChapter):
         self.chapterName = chapterName
         self.sourcePath = sourcePath
         self.archivePath = archivePath
-
+        self.scan_info = scan_info
+        self.year = year
 
 class MissingChapter:
     def __init__(

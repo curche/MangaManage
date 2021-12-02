@@ -93,3 +93,39 @@ class CalculateChapterName:
             if result:
                 return str(result) + ".8"
         return None
+
+    def calc_from_filename(self, file_name):
+        """for an explanation of the regex, check the bottom of the file"""
+        expected_filename_regex = r"^(.+)\sv([0-9]+\.?[0-9]*)\s(\((\d+)\))?\s\(Digital\)[\(F\d\)\s]+\(([\w\s\-]+)\)$"
+        match_obj = re.search(expected_filename_regex, file_name)
+        if match_obj is None:
+            # try to grab only volume number
+            match_another_obj = re.search(r"^(.+)\sv([0-9]+\.?[0-9]*)", file_name)
+            if match_another_obj is None:
+                # give up all hope in this rip
+                return [file_name, 1, 2022, ""]
+            else:
+                return [match_another_obj.group(1), match_another_obj.group(2), 2021, ""]
+
+        chapter_name = match_obj.group(1)
+        chapter_number = match_obj.group(2).lstrip("0") or "0"
+        # group(3) is just `(group(4))`
+        year = match_obj.group(4)
+        scan_info = match_obj.group(5)
+
+        return [chapter_name, chapter_number, year, scan_info]
+
+
+"""
+ Explaining the mammoth of a regex
+ Regex = ^(.+)\\sv([0-9]+\\.?[0-9]*)\\s(\\((\\d+)\\))?\\s\\(Digital\\)[\\(F\\d\\)\\s]+\\(([\\w\\s\\-]+)\\)$
+ there are 5 groups (4 useful ones) captured
+ ignoring the groups, the regex = ^(group1)v(group2)\\s+(group3)?\\s+\\(Digital\\)[\\(F\\d\\)\\s]+(group5)$
+ which basically is looking for `v`, `Digital` in the filename and everything else is grouped
+ sometimes there are Fixed releases too and those come up as F1, F3 etc
+ now the groups:
+     (.+) - capture everything
+     v([0-9]+\\.?[0-9]*) - capture's the volume number, eg: v01, v2, v13, v100.5
+     ( (\\((\\d+)\\))? ) - matches the year, can do \\d{4} but eh
+     \\(([\\w\\s\\-]+)\\) - this is usually the scan grp
+"""

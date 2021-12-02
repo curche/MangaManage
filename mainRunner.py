@@ -1,5 +1,6 @@
 import datetime
 import glob
+import re
 import html
 from typing import List, Optional, Set
 from pathlib import Path
@@ -14,8 +15,9 @@ from manga.gateways.database import DatabaseGateway
 from manga.gateways.filesystem import FilesystemInterface
 from models.manga import Chapter, MissingChapter
 
+
 # for each folder in sources
-# databas -> select anilist id where series=x
+# database -> select anilist id where series=x
 # getChapter -> title
 
 
@@ -58,18 +60,22 @@ class MainRunner:
                 chapterName = html.unescape(chapterPath.name)
                 seriesName = html.unescape(chapterPath.parent.name)
 
-                anilistId = 0 # self.database.getAnilistIDForSeries(seriesName)
-                chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
+                anilistId = 0  # self.database.getAnilistIDForSeries(seriesName)
+                chapterNumber = self.calcChapterName.execute(chapterName)
+                [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
 
                 estimatedArchivePath = self.generateArchivePath(
                     anilistId, chapterName)
+
                 chapterData = Chapter(
                     anilistId,
                     seriesName,
-                    chapterNumber,
-                    chapterName,
+                    chapter_number,
+                    chapter_name,
                     chapterPath,
                     estimatedArchivePath,
+                    scan_info,
+                    year
                 )
                 self.logger.debug(f"Already had tracker ID: {anilistId}")
 
