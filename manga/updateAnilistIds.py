@@ -54,7 +54,7 @@ class UpdateTrackerIds:
     def updateFor(self, series, interactive=False) -> Optional[int]:
         self.logger.info("Updating for " + series)
         entries = self.anilist.search_media_by_filename(series)
-        result = self.__findTrackerForSeries(entries, series, interactive=interactive)
+        result = self.__findTrackerForSeries(entries.values(), series, interactive=interactive)
         if result is not None:
             self.database.insertTracking(result.series_name, result.tracker_entry)
             return result.tracker_entry
