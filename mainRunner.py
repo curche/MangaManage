@@ -64,8 +64,7 @@ class MainRunner:
                 chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
                 [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
 
-                estimatedArchivePath = self.generateArchivePath(
-                    anilistId, chapterName)
+                estimatedArchivePath = self.generate_simple_archive_path(chapterPathStr)
 
                 chapterData = Chapter(
                     anilistId,
@@ -86,9 +85,7 @@ class MainRunner:
                     foundAnilistId = self.findAnilistIdForSeries(
                         seriesName, interactive=interactive
                     )
-                    estimatedArchivePath = self.generateArchivePath(
-                        foundAnilistId, chapterName
-                    )
+                    estimatedArchivePath = self.generate_simple_archive_path(chapterPathStr)
                     chapterData.archivePath = estimatedArchivePath
                     if not foundAnilistId or foundAnilistId is None:
                         self.logger.error(f"No anilistId for {chapterData.seriesName}")
@@ -115,6 +112,9 @@ class MainRunner:
             self.logger.error("Exception thrown")
             self.logger.error(str(thrown_exception))
             self.send_error(thrown_exception)
+
+    def generate_simple_archive_path(self, chapterPathStr):
+        return Path(chapterPathStr.replace(self.sourceFolder, self.archiveFolder))
 
     def generateArchivePath(self, anilistId, chapterName):
         return Path(self.archiveFolder).joinpath(f"{anilistId}/{chapterName}.cbz")
