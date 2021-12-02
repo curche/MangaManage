@@ -7,6 +7,7 @@ from manga.updateAnilistIds import UpdateTrackerIds
 from manga.missingChapters import CheckGapsInChapters
 from manga.createMetadata import CreateMetadata
 from manga.createMetadata2 import CreateMetadata2
+from manga.createMetadata3 import CreateMetadata3
 from manga.deleteReadAnilist import DeleteReadChapters
 from manga.checkMissingSQL import CheckMissingChaptersInSQL
 from manga.checkForUpdates import CheckForUpdates
@@ -32,12 +33,15 @@ class MangaContainer:
             self.config["manga"]["archivefolder"],
         )
 
-        parser = self.config["system"]["xmlParser"]
-        if parser == "lxml":
-            self.createMetadata = CreateMetadata2(
-                filesystem=self.filesystem, anilist=self.tracker)
-        elif parser == "ElementTree":
-            self.createMetadata = CreateMetadata(filesystem=self.filesystem)
+        # parser = self.config["system"]["xmlParser"]
+        # if parser == "lxml":
+        #    self.createMetadata = CreateMetadata2(
+        #        filesystem=self.filesystem, anilist=self.tracker)
+        # elif parser == "ElementTree":
+        #    self.createMetadata = CreateMetadata(filesystem=self.filesystem)
+        self.createMetadata = CreateMetadata3(
+            filesystem=self.filesystem, anilist=self.tracker
+        )
 
         self.updateTrackerIds = UpdateTrackerIds(self.database, self.tracker)
 
