@@ -1,4 +1,5 @@
 from typing import Optional
+from cross.decorators import Logger
 from manga.gateways.anilist import TrackerGatewayInterface
 import os
 from pathlib import Path
@@ -6,6 +7,7 @@ import re
 import glob
 
 
+@Logger
 class CalculateChapterName:
     def __init__(self, anilist: TrackerGatewayInterface) -> None:
         self.anilist = anilist
@@ -103,9 +105,13 @@ class CalculateChapterName:
             match_another_obj = re.search(r"^(.+)\sv([0-9]+\.?[0-9]*)", file_name)
             if match_another_obj is None:
                 # give up all hope in this rip
+                self.logger.debug(f"No Regex matched switching to defaults")
                 return [file_name, 1, 2022, ""]
             else:
-                return [match_another_obj.group(1), match_another_obj.group(2), 2021, ""]
+                chapter_name = match_another_obj.group(1)
+                chapter_number = match_another_obj.group(2)
+                self.logger.debug(f"Regex results: [ {chapter_name}, {chapter_number}, 2021, \"\"]")
+                return [chapter_name, chapter_number, 2021, ""]
 
         chapter_name = match_obj.group(1)
         chapter_number = match_obj.group(2).lstrip("0") or "0"
@@ -113,6 +119,7 @@ class CalculateChapterName:
         year = match_obj.group(4)
         scan_info = match_obj.group(5)
 
+        self.logger.debug(f"Regex results: [ {chapter_name}, {chapter_number}, {year}, {scan_info} ]")
         return [chapter_name, chapter_number, year, scan_info]
 
 
