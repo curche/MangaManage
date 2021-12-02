@@ -114,7 +114,9 @@ class MainRunner:
             self.send_error(thrown_exception)
 
     def generate_simple_archive_path(self, chapterPathStr):
-        return Path(chapterPathStr.replace(self.sourceFolder, self.archiveFolder))
+        chapterPath = chapterPathStr.replace(self.sourceFolder, self.archiveFolder)
+        extension = "cbz"
+        return Path(f"{chapterPath}.{extension}")
 
     def generateArchivePath(self, anilistId, chapterName):
         return Path(self.archiveFolder).joinpath(f"{anilistId}/{chapterName}.cbz")
