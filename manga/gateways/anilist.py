@@ -203,6 +203,7 @@ class AnilistGateway(TrackerGatewayInterface):
               name
               category
               isGeneralSpoiler
+              rank
             }
           }
         }"""
@@ -242,7 +243,9 @@ class AnilistGateway(TrackerGatewayInterface):
             tag_name = tag["name"]
             tag_category = tag["category"]
             is_spoiler = tag["isGeneralSpoiler"]
-            if is_spoiler:
+            rank = tag["rank"]
+            # dont add "weak" tags or spoiler-marked tags
+            if is_spoiler or rank < 60:
                 continue
             tags.append(f"{tag_category}: {tag_name}")
 
