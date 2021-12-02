@@ -165,6 +165,11 @@ class AnilistGateway(TrackerGatewayInterface):
         return model_dictionary
 
     def search_media_by_id(self, id):
+
+        cache_value = self.cache.get(id)
+        if cache_value is not None:
+            return cache_value
+
         query = """query ($anilistId: Int) {
           Media(id: $anilistId, type: MANGA, sort: POPULARITY_DESC) {
             id
@@ -226,7 +231,7 @@ class AnilistGateway(TrackerGatewayInterface):
                 penciller = name
                 inker = name
 
-        return AnilistComicInfo(
+        anilistData = AnilistComicInfo(
             tracker_id=id,
             title=media["title"]["userPreferred"],
             manga_format=media["format"],
@@ -244,3 +249,6 @@ class AnilistGateway(TrackerGatewayInterface):
             chapters=media["chapters"],
             volumes=media["volumes"]
         )
+        self.cache[id] = anilistData
+
+        return anilistData
