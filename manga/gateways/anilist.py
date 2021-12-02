@@ -100,8 +100,9 @@ class AnilistGateway(TrackerGatewayInterface):
         return (media["id"], titles)
 
     def search_media_by_filename(self, title) -> Mapping[int, TrackerSeries]:
-        query = """query($searchId: String) {
-          Media(search: $searchId) {
+        query = """query ($searchId: String) {
+          Page(page: 1, perPage: 3) {
+            media(search: $searchId) {
               id
               countryOfOrigin
               title {
@@ -110,6 +111,7 @@ class AnilistGateway(TrackerGatewayInterface):
               }
               status
               chapters
+            }
           }
         }"""
         variables = {"searchId": title}
@@ -120,22 +122,22 @@ class AnilistGateway(TrackerGatewayInterface):
             print(result["errors"])
             return
 
-        searchResults = result["data"]["Media"]
+        searchResults = result["data"]["Page"]["media"]
 
         models: List[TrackerSeries] = []
         for series in searchResults:
             main_titles = [
-                series["media"]["title"]["userPreferred"],
-                series["media"]["title"]["romaji"],
+                series["title"]["userPreferred"],
+                series["title"]["romaji"],
             ]
 
             models.append(
                 TrackerSeries(
-                    series["media"]["id"],
+                    series["id"],
                     main_titles,
-                    series["media"]["status"],
-                    series["media"]["chapters"],
-                    series["media"]["countryOfOrigin"],
+                    series["status"],
+                    series["chapters"],
+                    series["countryOfOrigin"],
                     0,
                 )
             )
