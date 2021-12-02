@@ -60,7 +60,7 @@ class MainRunner:
                 chapterName = html.unescape(chapterPath.name)
                 seriesName = html.unescape(chapterPath.parent.name)
 
-                anilistId = 0  # self.database.getAnilistIDForSeries(seriesName)
+                anilistId = self.database.getAnilistIDForSeries(seriesName)
                 chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
                 [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
 
@@ -94,7 +94,7 @@ class MainRunner:
                 if not isChapterOnDB:
                     self.setupMetadata(chapterData)
                     self.compressChapter(chapterData)
-                    self.insertInDatabase(chapterData)
+                    # self.insertInDatabase(chapterData)
                     new_chapters.add(chapterData)
                     # self.filesystem.deleteFolder(location=chapterPathStr)
                 else:
@@ -121,7 +121,7 @@ class MainRunner:
     def generateArchivePath(self, anilistId, chapterName):
         return Path(self.archiveFolder).joinpath(f"{anilistId}/{chapterName}.cbz")
 
-    def findAnilistIdForSeries(self, series: str, interactive=False) -> Optional[str]:
+    def findAnilistIdForSeries(self, series: str, interactive=False):
         return self.updateTrackerIds.updateFor(series, interactive=interactive)
 
     def setupMetadata(self, chapter: Chapter):

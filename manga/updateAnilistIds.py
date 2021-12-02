@@ -17,7 +17,7 @@ class UpdateTrackerIds:
 
     class FoundEntry:
         "Model to hold find results"
-        def __init__(self, series_name: str, tracker_entry: TrackerSeries):
+        def __init__(self, series_name: str, tracker_entry: int):
             self.series_name = series_name
             self.tracker_entry = tracker_entry
 
@@ -29,6 +29,11 @@ class UpdateTrackerIds:
         bestMatch: Optional[TrackerSeries] = None
         bestMatchDistance = 999
         
+        if interactive:
+            # self.logger.info(f"Best match at distance {bestMatchDistance} | {bestMatch.tracker_id}")
+            userValue = input("Enter Anilist ID: ")
+            return self.FoundEntry(series, int(userValue))
+
         for tracker_entry in tracker_entries:
             for tracker_title in tracker_entry.titles:
                 prepped_title = tracker_title.lower()
@@ -42,18 +47,14 @@ class UpdateTrackerIds:
                          f" - dist {rdistance} | id [{tracker_entry.tracker_id}]")
                     )
 
-        if interactive:
-            self.logger.info(f"Best match at distance {bestMatchDistance} | {bestMatch.tracker_id}")
-            userValue = input("Enter Anilist ID: ")
-            return self.FoundEntry(series, userValue)
-        elif bestMatchDistance < 4:
+        if bestMatchDistance < 4:
             return self.FoundEntry(series, bestMatch.tracker_id)
         return None
 
-    def updateFor(self, series, interactive=False) -> Optional[str]:
+    def updateFor(self, series, interactive=False) -> Optional[int]:
         self.logger.info("Updating for " + series)
-        entries = self.anilist.getAllEntries()
-        result = self.__findTrackerForSeries(entries.values(), series, interactive=interactive)
+        # entries = self.anilist.getAllEntries()
+        result = self.__findTrackerForSeries([None], series, interactive=interactive)
         if result is not None:
             self.database.insertTracking(result.series_name, result.tracker_entry)
             return result.tracker_entry
