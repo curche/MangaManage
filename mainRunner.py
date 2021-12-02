@@ -60,9 +60,9 @@ class MainRunner:
                 chapterName = html.unescape(chapterPath.name)
                 seriesName = html.unescape(chapterPath.parent.name)
 
-                anilistId = self.database.getAnilistIDForSeries(seriesName)
-                chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
                 [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
+                anilistId = self.database.getAnilistIDForSeries(chapter_name)
+                # chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
 
                 estimatedArchivePath = self.generate_simple_archive_path(chapterPathStr)
 
@@ -79,11 +79,11 @@ class MainRunner:
                 self.logger.debug(f"Already had tracker ID: {anilistId}")
 
                 isChapterOnDB = self.database.doesExistChapterAndAnilist(
-                    anilistId, chapterNumber
+                    anilistId, chapter_number
                 )
                 if not anilistId or anilistId is None:
                     foundAnilistId = self.findAnilistIdForSeries(
-                        seriesName, interactive=interactive
+                        chapter_name, interactive=interactive
                     )
                     estimatedArchivePath = self.generate_simple_archive_path(chapterPathStr)
                     chapterData.archivePath = estimatedArchivePath

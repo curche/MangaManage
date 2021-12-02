@@ -99,6 +99,51 @@ class AnilistGateway(TrackerGatewayInterface):
         ]
         return (media["id"], titles)
 
+    def search_media_by_filename(self, title) -> Mapping[int, TrackerSeries]:
+        query = """query($searchId: String) {
+          Media(search: $searchId) {
+              id
+              countryOfOrigin
+              title {
+                romaji
+                userPreferred
+              }
+              status
+              chapters
+          }
+        }"""
+        variables = {"searchId": title}
+
+        result = self.__prepareRequest(query, variables)
+        errors = result.get("errors")
+        if errors is not None:
+            print(result["errors"])
+            return
+
+        searchResults = result["data"]["Media"]
+
+        models: List[TrackerSeries] = []
+        for series in searchResults:
+            main_titles = [
+                series["media"]["title"]["userPreferred"],
+                series["media"]["title"]["romaji"],
+            ]
+
+            models.append(
+                TrackerSeries(
+                    series["media"]["id"],
+                    main_titles,
+                    series["media"]["status"],
+                    series["media"]["chapters"],
+                    series["media"]["countryOfOrigin"],
+                    0,
+                )
+            )
+
+        # Create anilist ID keyed dictionary
+        model_dictionary = dict((v.tracker_id, v) for v in models)
+        return model_dictionary
+
     def getAllEntries(self) -> Mapping[int, TrackerSeries]:
         query = """
       query($userId: Int) {

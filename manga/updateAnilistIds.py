@@ -28,11 +28,6 @@ class UpdateTrackerIds:
         series_to_match = series.lower()
         bestMatch: Optional[TrackerSeries] = None
         bestMatchDistance = 999
-        
-        if interactive:
-            # self.logger.info(f"Best match at distance {bestMatchDistance} | {bestMatch.tracker_id}")
-            userValue = input("Enter Anilist ID: ")
-            return self.FoundEntry(series, int(userValue))
 
         for tracker_entry in tracker_entries:
             for tracker_title in tracker_entry.titles:
@@ -47,14 +42,19 @@ class UpdateTrackerIds:
                          f" - dist {rdistance} | id [{tracker_entry.tracker_id}]")
                     )
 
+        if interactive:
+            self.logger.info(f"Best match at distance {bestMatchDistance} | {bestMatch.tracker_id}")
+            userValue = int(input("Enter Anilist ID: (enter 0 to Skip) "))
+            if userValue != 0:
+                return self.FoundEntry(series, userValue)
         if bestMatchDistance < 4:
             return self.FoundEntry(series, bestMatch.tracker_id)
         return None
 
     def updateFor(self, series, interactive=False) -> Optional[int]:
         self.logger.info("Updating for " + series)
-        # entries = self.anilist.getAllEntries()
-        result = self.__findTrackerForSeries([None], series, interactive=interactive)
+        entries = self.anilist.search_media_by_filename(series)
+        result = self.__findTrackerForSeries(entries, series, interactive=interactive)
         if result is not None:
             self.database.insertTracking(result.series_name, result.tracker_entry)
             return result.tracker_entry
