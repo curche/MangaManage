@@ -19,14 +19,15 @@ class AnilistComicInfo:
             is_adult: bool,
             site_url: str,
             chapters: Optional[int],  # Chapters is null if an ongoing series
-            volumes: Optional[int]    # Volumes is null if ongoing
+            volumes: Optional[int],   # Volumes is null if ongoing
+            tags: [str]
     ):
         self.tracker_id = tracker_id
 
         self.title = title
         self.altTitles = synonyms
         self.summary = description
-        self.genres = ", ".join(genres)
+        self.genres = ", ".join(genres+tags)
 
         self.status = status.lower()
         self.format = manga_format.lower().replace("_", " ")

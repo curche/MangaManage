@@ -199,6 +199,11 @@ class AnilistGateway(TrackerGatewayInterface):
             siteUrl
             chapters
             volumes
+            tags {
+              name
+              category
+              isGeneralSpoiler
+            }
           }
         }"""
 
@@ -231,6 +236,16 @@ class AnilistGateway(TrackerGatewayInterface):
                 penciller = name
                 inker = name
 
+        all_tags = media["tags"]
+        tags = []
+        for tag in all_tags:
+            tag_name = tag["name"]
+            tag_category = tag["category"]
+            is_spoiler = tag["isGeneralSpoiler"]
+            if is_spoiler:
+                continue
+            tags.append(f"{tag_category}: {tag_name}")
+
         anilistData = AnilistComicInfo(
             tracker_id=id,
             title=media["title"]["userPreferred"],
@@ -247,7 +262,8 @@ class AnilistGateway(TrackerGatewayInterface):
             is_adult=media["isAdult"],
             site_url=media["siteUrl"],
             chapters=media["chapters"],
-            volumes=media["volumes"]
+            volumes=media["volumes"],
+            tags=tags
         )
         self.cache[id] = anilistData
 
