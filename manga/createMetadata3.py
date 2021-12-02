@@ -28,6 +28,7 @@ class CreateMetadata3(CreateMetadataInterface):
         root = etree.Element("ComicInfo")
         etree.SubElement(root, "Title").text = chapter.chapterName
         etree.SubElement(root, "Series").text = anilistData.title
+        etree.SubElement(root, "Chapter").text = chapter.chapterNumber
         etree.SubElement(root, "Volume").text = chapter.chapterNumber
         etree.SubElement(root, "AlternateSeries").text = anilistData.altTitles
         etree.SubElement(root, "Summary").text = anilistData.summary
