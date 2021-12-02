@@ -23,6 +23,6 @@ class ApplicationContainer():
             self.manga.deleteReadChapters,
             self.manga.calculateChapterName,
             self.manga.updateTrackerIds,
-            self.manga.createMetadata
+            self.manga.createMetadata3
         )
         pass

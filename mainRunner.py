@@ -54,10 +54,13 @@ class MainRunner:
                 self.logger.info(f"Parsing: {chapterPathStr}")
                 # Inferring information from files
                 chapterPath = Path(chapterPathStr)
+
                 chapterName = html.unescape(chapterPath.name)
                 seriesName = html.unescape(chapterPath.parent.name)
-                anilistId = self.database.getAnilistIDForSeries(seriesName)
+
+                anilistId = 0 # self.database.getAnilistIDForSeries(seriesName)
                 chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
+
                 estimatedArchivePath = self.generateArchivePath(
                     anilistId, chapterName)
                 chapterData = Chapter(

@@ -3,6 +3,7 @@ import json
 from functools import reduce
 from typing import List, Mapping
 from models.tracker import TrackerSeries
+from models.anilistToComicInfo import AnilistComicInfo
 
 
 class TrackerGatewayInterface:
@@ -13,6 +14,9 @@ class TrackerGatewayInterface:
         pass
 
     def getAllEntries(self) -> Mapping[int, TrackerSeries]:
+        pass
+
+    def search_media_by_id(self, id) -> AnilistComicInfo:
         pass
 
 
@@ -159,3 +163,84 @@ class AnilistGateway(TrackerGatewayInterface):
         # Create anilist ID keyed dictionary
         model_dictionary = dict((v.tracker_id, v) for v in models)
         return model_dictionary
+
+    def search_media_by_id(self, id):
+        query = """query ($anilistId: Int) {
+          Media(id: $anilistId, type: MANGA, sort: POPULARITY_DESC) {
+            id
+            idMal
+            title {
+              userPreferred
+              romaji
+            }
+            format
+            status(version: 2)
+            description
+            countryOfOrigin
+            source(version: 2)
+            genres
+            staff(sort: RELEVANCE, page: 1, perPage: 3) {
+              edges {
+                node {
+                  name {
+                    userPreferred
+                  }
+                  languageV2
+                }
+                role
+              }
+            }
+            isAdult
+            siteUrl
+            chapters
+            volumes
+          }
+        }"""
+
+        variable = {"anilistId": id}
+
+        result = self.__prepareRequest(query, variable)
+        errors = result.get("errors")
+        if errors is not None:
+            print(result["errors"])
+            return
+
+        media = result["data"]["Media"]
+
+        staff = media["staff"]
+        writer = ""
+        penciller = ""
+        inker = ""
+
+        for edge in staff["edges"]:
+            node = edge["node"]
+            language = node["languageV2"]
+            if language != "Japanese":
+                continue
+
+            role = edge["role"]
+            name = node["name"]["userPreferred"]
+            if role.startswith("Story"):
+                writer = name
+            if role.endswith("Art"):
+                penciller = name
+                inker = name
+
+        return AnilistComicInfo(
+            tracker_id=id,
+            title=media["title"]["userPreferred"],
+            manga_format=media["format"],
+            status=media["status"],
+            description=media["description"],
+            country_of_origin=media["countryOfOrigin"],
+            original_source=media["source"],
+            genres=media["genres"],
+            writer=writer,
+            penciller=penciller,
+            inker=inker,
+            synonyms=media["title"]["romaji"],
+            is_adult=media["isAdult"],
+            site_url=media["siteUrl"],
+            chapters=media["chapters"],
+            volumes=media["volumes"]
+        )
