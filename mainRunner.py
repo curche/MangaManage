@@ -60,7 +60,13 @@ class MainRunner:
                 chapterName = html.unescape(chapterPath.name)
                 seriesName = html.unescape(chapterPath.parent.name)
 
-                [chapter_name, chapter_number, year, scan_info] = self.calcChapterName.calc_from_filename(chapterName)
+                regexParseResults = self.calcChapterName.calc_from_filename(chapterName)
+                if regexParseResults is None:
+                    self.logger.debug(f"{chapterPathStr} does not have a valid filename. Quarantining...")
+                    self.filesystem.simple_quarantine(chapterPathStr)
+                    continue
+
+                [chapter_name, chapter_number, year, scan_info] = regexParseResults
                 anilistId = self.database.getAnilistIDForSeries(chapter_name)
                 # chapterNumber = self.calcChapterName.execute(chapterName, anilistId)
 

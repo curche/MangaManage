@@ -12,6 +12,9 @@ class FilesystemInterface:
     def deleteFolder(self, location: str):
         pass
 
+    def simple_quarantine(self, chapter_path_str: str):
+        pass
+
     def quarantineSeries(self, anilistId: str):
         pass
 
@@ -95,6 +98,33 @@ class FilesystemGateway(FilesystemInterface):
         # Parent
         if (seriesPath.exists) and (not any(seriesPath.iterdir())):
             shutil.rmtree(seriesPath.resolve())
+
+    def simple_quarantine(self, chapter_path_str: str):
+        """
+        when chapter name regex parsing fails, send files to quarantine
+        (while preserving folder structure)
+        """
+
+        original_path = Path(chapter_path_str)
+        quarantine_path = Path(chapter_path_str.replace(self.sourceFolder, self.quarantineFolder.as_posix()))
+
+        if not original_path.exists():
+            self.logger.error(f"Original Path doesn't exist: {original_path}")
+            return
+
+        if quarantine_path.exists():
+            self.logger.info(f"Updating {chapter_path_str} in quarantine")
+        else:
+            self.logger.info(f"Adding {chapter_path_str} newly to quarantine")
+            quarantine_path.mkdir(parents=True)
+
+        for file in original_path.iterdir():
+            filename = file.name
+            file_quarantine_path = quarantine_path.joinpath(filename)
+            file.rename(file_quarantine_path)
+
+        original_path.rmdir()
+        pass
 
     def quarantineSeries(self, anilistId: str):
         archiveSeriesPath = Path.joinpath(self.archiveRootPath, f"{anilistId}")

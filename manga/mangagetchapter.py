@@ -96,22 +96,13 @@ class CalculateChapterName:
                 return str(result) + ".8"
         return None
 
-    def calc_from_filename(self, file_name):
+    def calc_from_filename(self, file_name) -> Optional[list[str]]:
         """for an explanation of the regex, check the bottom of the file"""
         expected_filename_regex = r"^(.+)\sv([0-9]+\.?[0-9]*)\s(\((\d+)\))?\s\(Digital\)[\(F\d\)\s]+\((.+)\)$"
         match_obj = re.search(expected_filename_regex, file_name)
         if match_obj is None:
-            # try to grab only volume number
-            match_another_obj = re.search(r"^(.+)\sv([0-9]+\.?[0-9]*)", file_name)
-            if match_another_obj is None:
-                # give up all hope in this rip
-                self.logger.debug(f"No Regex matched switching to defaults")
-                return [file_name, 1, 2022, ""]
-            else:
-                chapter_name = match_another_obj.group(1)
-                chapter_number = match_another_obj.group(2)
-                self.logger.debug(f"Regex results for {file_name}: [ {chapter_name}, {chapter_number}, 2021, \"\"]")
-                return [chapter_name, chapter_number, 2021, ""]
+            # breaks file naming, might as well quarantine it and fix filenames later
+            return None
 
         chapter_name = match_obj.group(1)
         chapter_number = match_obj.group(2).lstrip("0") or "0"
