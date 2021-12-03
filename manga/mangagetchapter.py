@@ -125,5 +125,6 @@ class CalculateChapterName:
      (.+) - capture everything
      v([0-9]+\\.?[0-9]*) - capture's the volume number, eg: v01, v2, v13, v100.5
      ( (\\((\\d+)\\))? ) - matches the year, can do \\d{4} but eh
-     \\(([\\w\\s\\-]+)\\) - this is usually the scan grp
+     the last regex is the same as the first one and captures everything
+      towards the end and makes it the scan grp
 """
