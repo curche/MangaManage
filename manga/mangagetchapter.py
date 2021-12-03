@@ -98,7 +98,7 @@ class CalculateChapterName:
 
     def calc_from_filename(self, file_name):
         """for an explanation of the regex, check the bottom of the file"""
-        expected_filename_regex = r"^(.+)\sv([0-9]+\.?[0-9]*)\s(\((\d+)\))?\s\(Digital\)[\(F\d\)\s]+\(([\w\s\-]+)\)$"
+        expected_filename_regex = r"^(.+)\sv([0-9]+\.?[0-9]*)\s(\((\d+)\))?\s\(Digital\)[\(F\d\)\s]+\((.+)\)$"
         match_obj = re.search(expected_filename_regex, file_name)
         if match_obj is None:
             # try to grab only volume number
