@@ -49,7 +49,7 @@ class FilesystemGateway(FilesystemInterface):
     def __init__(
         self, sourceFolder: str, archiveFolder: str, quarantineFolder: str
     ) -> None:
-        self.mangas = sourceFolder
+        self.sourceFolder = sourceFolder
         self.archiveRootPath = Path(archiveFolder)
         self.quarantineFolder = Path(quarantineFolder)
 
